@@ -1,6 +1,11 @@
 #include "UnzipHelper.h"
-#include <Windows.h>
-#pragma comment(lib, "zdll.lib")
+
+#ifdef _DEBUG
+#pragma comment(lib, "zlibstaticd.lib")
+#else
+#pragma comment(lib, "zlibstatic.lib")
+#endif // _DEBUG
+
 static void TranslateOpenMode(__in int mode, __out ULONG *creationMode)
 {
 	*creationMode = 0;
@@ -19,9 +24,9 @@ static void TranslateOpenMode(__in int mode, __out ULONG *creationMode)
 	}
 }
 
-voidpf ZCALLBACK UHOpen(voidpf opaque, const void* filename, int mode)
+voidpf ZCALLBACK UHOpen(voidpf opaque, const char* filename, int mode)
 {
-	return UHOpen64(opaque, filename, mode);
+	return UHOpen64(opaque, (const void*)filename, mode);
 }
 
 uLong ZCALLBACK UHRead(voidpf opaque, voidpf stream, void* buf, uLong size)
